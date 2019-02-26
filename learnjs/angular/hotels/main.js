@@ -57,34 +57,39 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ActivitiesComponent", function() { return ActivitiesComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_mock_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/mock/data */ "./src/app/shared/mock/data.ts");
+/* harmony import */ var _ngrx_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ngrx/store */ "./node_modules/@ngrx/store/fesm5/store.js");
+/* harmony import */ var _store_actions_places_action__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../store/actions/places.action */ "./src/app/store/actions/places.action.ts");
+
 
 
 
 var ActivitiesComponent = /** @class */ (function () {
-    function ActivitiesComponent() {
+    function ActivitiesComponent(store) {
+        this.store = store;
         this.currentType = '';
-        this.placeSelected = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
     }
     ActivitiesComponent.prototype.ngOnInit = function () {
-        this.places = _shared_mock_data__WEBPACK_IMPORTED_MODULE_2__["places"];
+        var _this = this;
+        this.store.dispatch(new _store_actions_places_action__WEBPACK_IMPORTED_MODULE_3__["GetPlacesPending"]());
+        this.store.select('places').subscribe(function (places) {
+            _this.places = places;
+        });
         this.selectPlace(this.places[0]);
     };
     ActivitiesComponent.prototype.selectPlace = function (place) {
-        this.selectedPlace = place;
-        this.placeSelected.emit(place);
+        var _this = this;
+        this.store.dispatch(new _store_actions_places_action__WEBPACK_IMPORTED_MODULE_3__["SelectPlace"](place));
+        this.store.select('selectedPlace').subscribe(function (selectedPlace) {
+            _this.selectedPlace = selectedPlace;
+        });
     };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Object)
-    ], ActivitiesComponent.prototype, "placeSelected", void 0);
     ActivitiesComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'app-activities',
             template: __webpack_require__(/*! ./activities.component.html */ "./src/app/activities/activities.component.html"),
             styles: [__webpack_require__(/*! ./activities.component.css */ "./src/app/activities/activities.component.css")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_ngrx_store__WEBPACK_IMPORTED_MODULE_2__["Store"]])
     ], ActivitiesComponent);
     return ActivitiesComponent;
 }());
@@ -111,7 +116,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h1>{{title}}</h1>\n<div class=\"element\">\n  <div class=\"element-left\">\n    <app-activities (placeSelected)=\"onPlaceSelected($event)\"></app-activities>\n  </div>\n  <div class=\"element-right\" *ngIf=\"selectedPlace\">\n    <app-weather [weather]=\"selectedPlace.weather\"></app-weather>\n    <app-followers [socialInfo]=\"selectedPlace.social_info\"></app-followers>\n  </div>\n  <div class=\"clear\"> </div>\n</div>\n"
+module.exports = "<h1>{{title}}</h1>\n<div class=\"element\">\n  <div class=\"element-left\">\n    <app-activities></app-activities>\n  </div>\n  <div class=\"element-right\" *ngIf=\"selectedPlace\">\n    <app-weather></app-weather>\n    <app-followers></app-followers>\n  </div>\n  <div class=\"clear\"> </div>\n</div>\n"
 
 /***/ }),
 
@@ -127,22 +132,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppComponent", function() { return AppComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _ngrx_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ngrx/store */ "./node_modules/@ngrx/store/fesm5/store.js");
+
 
 
 var AppComponent = /** @class */ (function () {
-    function AppComponent() {
+    function AppComponent(store) {
+        this.store = store;
         this.title = 'Hot Weather Widget';
         this.selectedPlace = false;
     }
-    AppComponent.prototype.onPlaceSelected = function (place) {
-        this.selectedPlace = place;
+    AppComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.store.select('selectedPlace').subscribe(function (selectedPlace) {
+            _this.selectedPlace = selectedPlace;
+        });
     };
     AppComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'app-root',
             template: __webpack_require__(/*! ./app.component.html */ "./src/app/app.component.html"),
             styles: [__webpack_require__(/*! ./app.component.css */ "./src/app/app.component.css")]
-        })
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_ngrx_store__WEBPACK_IMPORTED_MODULE_2__["Store"]])
     ], AppComponent);
     return AppComponent;
 }());
@@ -170,6 +182,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _socialinfo_socialinfo_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./socialinfo/socialinfo.component */ "./src/app/socialinfo/socialinfo.component.ts");
 /* harmony import */ var _shared_pipes_uniqtype_pipe__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./shared/pipes/uniqtype.pipe */ "./src/app/shared/pipes/uniqtype.pipe.ts");
 /* harmony import */ var _shared_pipes_filter_places_pipe__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./shared/pipes/filter-places.pipe */ "./src/app/shared/pipes/filter-places.pipe.ts");
+/* harmony import */ var _ngrx_effects__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @ngrx/effects */ "./node_modules/@ngrx/effects/fesm5/effects.js");
+/* harmony import */ var _ngrx_store__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @ngrx/store */ "./node_modules/@ngrx/store/fesm5/store.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./store */ "./src/app/store/index.ts");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../environments/environment */ "./src/environments/environment.ts");
+/* harmony import */ var _store_effects_places_effects__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./store/effects/places.effects */ "./src/app/store/effects/places.effects.ts");
+/* harmony import */ var _ngrx_store_devtools__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @ngrx/store-devtools */ "./node_modules/@ngrx/store-devtools/fesm5/store-devtools.js");
+
+
+
+
+
+
 
 
 
@@ -193,7 +217,12 @@ var AppModule = /** @class */ (function () {
                 _shared_pipes_filter_places_pipe__WEBPACK_IMPORTED_MODULE_8__["FilterPlacesPipe"]
             ],
             imports: [
-                _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"]
+                _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
+                _ngrx_store__WEBPACK_IMPORTED_MODULE_10__["StoreModule"].forRoot(_store__WEBPACK_IMPORTED_MODULE_11__["reducers"]),
+                _ngrx_effects__WEBPACK_IMPORTED_MODULE_9__["EffectsModule"].forRoot([_store_effects_places_effects__WEBPACK_IMPORTED_MODULE_13__["PlacesEffects"]]),
+                _environments_environment__WEBPACK_IMPORTED_MODULE_12__["environment"].production
+                    ? []
+                    : _ngrx_store_devtools__WEBPACK_IMPORTED_MODULE_14__["StoreDevtoolsModule"].instrument()
             ],
             providers: [],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_3__["AppComponent"]]
@@ -404,6 +433,44 @@ var UniqtypePipe = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/shared/services/places-service.service.ts":
+/*!***********************************************************!*\
+  !*** ./src/app/shared/services/places-service.service.ts ***!
+  \***********************************************************/
+/*! exports provided: PlacesServiceService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PlacesServiceService", function() { return PlacesServiceService; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _mock_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mock/data */ "./src/app/shared/mock/data.ts");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+
+
+
+
+var PlacesServiceService = /** @class */ (function () {
+    function PlacesServiceService() {
+        this.places = _mock_data__WEBPACK_IMPORTED_MODULE_2__["places"];
+    }
+    PlacesServiceService.prototype.getPlaces = function () {
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(this.places);
+    };
+    PlacesServiceService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+            providedIn: 'root'
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+    ], PlacesServiceService);
+    return PlacesServiceService;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/socialinfo/socialinfo.component.css":
 /*!*****************************************************!*\
   !*** ./src/app/socialinfo/socialinfo.component.css ***!
@@ -438,28 +505,186 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SocialinfoComponent", function() { return SocialinfoComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _ngrx_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ngrx/store */ "./node_modules/@ngrx/store/fesm5/store.js");
+
 
 
 var SocialinfoComponent = /** @class */ (function () {
-    function SocialinfoComponent() {
+    function SocialinfoComponent(store) {
+        this.store = store;
     }
     SocialinfoComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.store.select('selectedPlace').subscribe(function (selectedPlace) {
+            _this.socialInfo = selectedPlace.social_info;
+        });
     };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Object)
-    ], SocialinfoComponent.prototype, "socialInfo", void 0);
     SocialinfoComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'app-followers',
             template: __webpack_require__(/*! ./socialinfo.component.html */ "./src/app/socialinfo/socialinfo.component.html"),
             styles: [__webpack_require__(/*! ./socialinfo.component.css */ "./src/app/socialinfo/socialinfo.component.css")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_ngrx_store__WEBPACK_IMPORTED_MODULE_2__["Store"]])
     ], SocialinfoComponent);
     return SocialinfoComponent;
 }());
 
+
+
+/***/ }),
+
+/***/ "./src/app/store/actions/places.action.ts":
+/*!************************************************!*\
+  !*** ./src/app/store/actions/places.action.ts ***!
+  \************************************************/
+/*! exports provided: GET_PLACES_PENDING, GET_PLACES_SUCCESS, GET_PLACES_ERROR, SELECT_PLACE, GetPlacesPending, GetPlacesSuccess, GetPlacesError, SelectPlace */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GET_PLACES_PENDING", function() { return GET_PLACES_PENDING; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GET_PLACES_SUCCESS", function() { return GET_PLACES_SUCCESS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GET_PLACES_ERROR", function() { return GET_PLACES_ERROR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SELECT_PLACE", function() { return SELECT_PLACE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GetPlacesPending", function() { return GetPlacesPending; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GetPlacesSuccess", function() { return GetPlacesSuccess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GetPlacesError", function() { return GetPlacesError; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SelectPlace", function() { return SelectPlace; });
+var GET_PLACES_PENDING = 'GET_PLACES_PENDING';
+var GET_PLACES_SUCCESS = 'GET_PLACES_SUCCESS';
+var GET_PLACES_ERROR = 'GET_PLACES_ERROR';
+var SELECT_PLACE = 'SELECT_PLACE';
+var GetPlacesPending = /** @class */ (function () {
+    function GetPlacesPending() {
+        this.type = GET_PLACES_PENDING;
+    }
+    return GetPlacesPending;
+}());
+
+var GetPlacesSuccess = /** @class */ (function () {
+    function GetPlacesSuccess(payload) {
+        this.payload = payload;
+        this.type = GET_PLACES_SUCCESS;
+    }
+    return GetPlacesSuccess;
+}());
+
+var GetPlacesError = /** @class */ (function () {
+    function GetPlacesError(payload) {
+        this.payload = payload;
+        this.type = GET_PLACES_ERROR;
+    }
+    return GetPlacesError;
+}());
+
+var SelectPlace = /** @class */ (function () {
+    function SelectPlace(payload) {
+        this.payload = payload;
+        this.type = SELECT_PLACE;
+    }
+    return SelectPlace;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/store/effects/places.effects.ts":
+/*!*************************************************!*\
+  !*** ./src/app/store/effects/places.effects.ts ***!
+  \*************************************************/
+/*! exports provided: PlacesEffects */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PlacesEffects", function() { return PlacesEffects; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _ngrx_effects__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ngrx/effects */ "./node_modules/@ngrx/effects/fesm5/effects.js");
+/* harmony import */ var _actions_places_action__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../actions/places.action */ "./src/app/store/actions/places.action.ts");
+/* harmony import */ var _shared_services_places_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/services/places-service.service */ "./src/app/shared/services/places-service.service.ts");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+
+
+
+
+
+
+
+var PlacesEffects = /** @class */ (function () {
+    function PlacesEffects(actions$, placesService) {
+        var _this = this;
+        this.actions$ = actions$;
+        this.placesService = placesService;
+        this.places$ = this.actions$.pipe(Object(_ngrx_effects__WEBPACK_IMPORTED_MODULE_2__["ofType"])(_actions_places_action__WEBPACK_IMPORTED_MODULE_3__["GET_PLACES_PENDING"]), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["switchMap"])(function () { return _this.placesService.getPlaces().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["map"])(function (places) { return new _actions_places_action__WEBPACK_IMPORTED_MODULE_3__["GetPlacesSuccess"](places); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["catchError"])(function (err) { return Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])(new _actions_places_action__WEBPACK_IMPORTED_MODULE_3__["GetPlacesError"](err)); })); }));
+    }
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_ngrx_effects__WEBPACK_IMPORTED_MODULE_2__["Effect"])(),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Object)
+    ], PlacesEffects.prototype, "places$", void 0);
+    PlacesEffects = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])(),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_ngrx_effects__WEBPACK_IMPORTED_MODULE_2__["Actions"],
+            _shared_services_places_service_service__WEBPACK_IMPORTED_MODULE_4__["PlacesServiceService"]])
+    ], PlacesEffects);
+    return PlacesEffects;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/store/index.ts":
+/*!********************************!*\
+  !*** ./src/app/store/index.ts ***!
+  \********************************/
+/*! exports provided: reducers */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reducers", function() { return reducers; });
+/* harmony import */ var _reducers_places_reducer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./reducers/places.reducer */ "./src/app/store/reducers/places.reducer.ts");
+
+var reducers = {
+    places: _reducers_places_reducer__WEBPACK_IMPORTED_MODULE_0__["placesReducer"],
+    selectedPlace: _reducers_places_reducer__WEBPACK_IMPORTED_MODULE_0__["selectPlaceReducer"]
+};
+
+
+/***/ }),
+
+/***/ "./src/app/store/reducers/places.reducer.ts":
+/*!**************************************************!*\
+  !*** ./src/app/store/reducers/places.reducer.ts ***!
+  \**************************************************/
+/*! exports provided: placesReducer, selectPlaceReducer */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "placesReducer", function() { return placesReducer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "selectPlaceReducer", function() { return selectPlaceReducer; });
+/* harmony import */ var _actions_places_action__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actions/places.action */ "./src/app/store/actions/places.action.ts");
+
+var intialState = [];
+function placesReducer(state, action) {
+    if (state === void 0) { state = intialState; }
+    switch (action.type) {
+        case _actions_places_action__WEBPACK_IMPORTED_MODULE_0__["GET_PLACES_SUCCESS"]:
+            return action.payload;
+        case _actions_places_action__WEBPACK_IMPORTED_MODULE_0__["GET_PLACES_ERROR"]:
+            return state;
+        default:
+            return state;
+    }
+}
+function selectPlaceReducer(state, action) {
+    return action.payload;
+}
 
 
 /***/ }),
@@ -498,24 +723,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WeatherComponent", function() { return WeatherComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _ngrx_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ngrx/store */ "./node_modules/@ngrx/store/fesm5/store.js");
+
 
 
 var WeatherComponent = /** @class */ (function () {
-    function WeatherComponent() {
+    function WeatherComponent(store) {
+        this.store = store;
     }
     WeatherComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.store.select('selectedPlace').subscribe(function (selectedPlace) {
+            _this.weather = selectedPlace.weather;
+        });
     };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Object)
-    ], WeatherComponent.prototype, "weather", void 0);
     WeatherComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'app-weather',
             template: __webpack_require__(/*! ./weather.component.html */ "./src/app/weather/weather.component.html"),
             styles: [__webpack_require__(/*! ./weather.component.css */ "./src/app/weather/weather.component.css")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_ngrx_store__WEBPACK_IMPORTED_MODULE_2__["Store"]])
     ], WeatherComponent);
     return WeatherComponent;
 }());
